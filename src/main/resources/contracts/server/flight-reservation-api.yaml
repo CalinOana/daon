@@ -1,0 +1,284 @@
+openapi: 3.0.3
+info:
+  title: Flight Reservation API
+  version: 1.0.0
+  description: API for listing flights, reserving seats, confirming bookings, and cancelling holds
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+paths:
+  /flights:
+    get:
+      tags:
+        - flights
+      summary: List available flights
+      operationId: getFlights
+      parameters:
+        - in: query
+          name: date
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Filter by departure date in ISO-8601 yyyy-MM-dd
+        - in: query
+          name: from
+          required: false
+          schema:
+            type: string
+            minLength: 3
+            maxLength: 10
+          description: Departure airport or city code
+        - in: query
+          name: to
+          required: false
+          schema:
+            type: string
+            minLength: 3
+            maxLength: 10
+          description: Arrival airport or city code
+      responses:
+        '200':
+          description: Flights returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                 $ref: '#/components/schemas/FlightDto'
+        '400':
+          description: Invalid query parameters
+  /flights/{id}/bookings:
+    post:
+      tags:
+        - bookings
+      summary: Create a held booking for a flight
+      operationId: createBooking
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookingRequest'
+      responses:
+        '201':
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingDto'
+        '400':
+          description: Invalid request
+        '404':
+          description: Flight not found
+        '409':
+          description: Seat unavailable or booking window closed
+  /bookings/{id}/confirm:
+    post:
+      tags:
+        - bookings
+      summary: Confirm a held booking
+      operationId: confirmBooking
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Booking confirmed
+          content:
+           application/json:
+            schema:
+              $ref: '#/components/schemas/BookingDto'
+        '404':
+          description: Booking not found
+        '409':
+          description: Booking cannot be confirmed
+  /bookings/{id}:
+    delete:
+      tags:
+        - bookings
+      summary: Cancel a reservation and release the seat
+      operationId: cancelBooking
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Booking cancelled
+        '404':
+          description: Booking not found
+  /admin/flights:
+    post:
+      tags:
+        - admin
+      summary: Create a new flight
+      operationId: createFlight
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFlightRequest'
+      responses:
+        '201':
+          description: Flight created
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/FlightDto'
+        '400':
+          description: Invalid flight data
+  /admin/flights/{id}:
+    delete:
+      tags:
+        - admin
+      summary: Remove a flight from the system
+      operationId: deleteFlight
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Flight deleted
+        '404':
+          description: Flight not found
+components:
+  schemas:
+    FlightDto:
+      type: object
+      required:
+        - id
+        - departureAirportCode
+        - departureCity
+        - arrivalAirportCode
+        - arrivalCity
+        - departureAt
+        - totalSeats
+        - remainingSeats
+        - status
+      properties:
+        id:
+          type: integer
+          format: int64
+        departureAirportCode:
+          type: string
+        departureCity:
+          type: string
+        arrivalAirportCode:
+          type: string
+        arrivalCity:
+          type: string
+        departureAt:
+          type: string
+          format: date-time
+        totalSeats:
+          type: integer
+          format: int32
+        remainingSeats:
+          type: integer
+          format: int32
+        status:
+          type: string
+          enum: [ ACTIVE, DEPARTED, CANCELLED ]
+
+    CreateFlightRequest:
+      type: object
+      required:
+        - departureAirportCode
+        - departureCity
+        - arrivalAirportCode
+        - arrivalCity
+        - departureAt
+        - totalSeats
+      properties:
+          departureAirportCode:
+            type: string
+            minLength: 3
+            maxLength: 10
+          departureCity:
+            type: string
+            minLength: 2
+            maxLength: 100
+          arrivalAirportCode:
+            type: string
+            minLength: 3
+            maxLength: 10
+          arrivalCity:
+            type: string
+            minLength: 2
+            maxLength: 100
+          departureAt:
+            type: string
+            format: date-time
+          totalSeats:
+            type: integer
+            format: int32
+            minimum: 1
+    CreateBookingRequest:
+        type: object
+        required:
+          - passengerName
+          - passengerEmail
+        properties:
+          passengerName:
+            type: string
+            minLength: 1
+            maxLength: 150
+          passengerEmail:
+            type: string
+            format: email
+            maxLength: 255
+
+    BookingDto:
+        type: object
+        required:
+          - id
+          - flightId
+          - passengerName
+          - passengerEmail
+          - status
+          - expiresAt
+        properties:
+          id:
+            type: integer
+            format: int64
+          flightId:
+            type: integer
+            format: int64
+          passengerName:
+            type: string
+          passengerEmail:
+            type: string
+          status:
+            type: string
+            enum: [ HELD, CONFIRMED, CANCELLED, EXPIRED ]
+          expiresAt:
+            type: string
+            format: date-time
+          confirmedAt:
+            type: string
+            format: date-time
+            nullable: true
+          cancelledAt:
+            type: string
+            format: date-time
+            nullable: true
