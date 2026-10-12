@@ -4,14 +4,14 @@
 
 ### Endpoints
 
-| Endpoint | Route                  | Purpose                                                      |
-|----------|------------------------|--------------------------------------------------------------|
-| GET      | /flights               | List available flights, optionally filtered by date or route |
-| POST     | /flights/{id}/bookings | Reserve a seat on a flight for a passenger                   |
-| POST     | /bookings/{id}/confirm | Confirm and finalise a reservation                           |
-| DELETE   | /bookings/{id}         | Cancel a reservation and release the seat                    |
-| POST     | /admin/flights         | Create a new flight in the system                            |
-| DELETE   | /admin/flights/{id}    | Remove a flight from the system                              |
+| Endpoint | Route                  | Purpose                                                      | Status |
+|----------|------------------------|--------------------------------------------------------------|--------|
+| GET      | /flights               | List available flights, optionally filtered by date or route | Done   |
+| POST     | /flights/{id}/bookings | Reserve a seat on a flight for a passenger                   |        |
+| POST     | /bookings/{id}/confirm | Confirm and finalise a reservation                           |        |
+| DELETE   | /bookings/{id}         | Cancel a reservation and release the seat                    |        |
+| POST     | /admin/flights         | Create a new flight in the system                            | Done   |
+| DELETE   | /admin/flights/{id}    | Remove a flight from the system                              | Done   |
 
 ### Booking window
 
