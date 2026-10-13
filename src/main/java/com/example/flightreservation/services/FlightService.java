@@ -10,13 +10,15 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class FlightService {
-    private static final long BOOKING_WINDOW_MINUTES = 45L;
     private final FlightRepository flightRepository;
+
     public FlightService(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;
     }
+
     @Transactional
     public Flight createFlight(
             String departureAirportCode,
@@ -38,12 +40,14 @@ public class FlightService {
         );
         return flightRepository.save(flight);
     }
+
     @Transactional
     public void deleteFlight(Long flightId) {
         Flight flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new FlightNotFoundException(flightId));
         flightRepository.delete(flight);
     }
+
     @Transactional()
     public List<Flight> getFlights(Optional<String> date, Optional<String> from, Optional<String> to) {
         OffsetDateTime now = OffsetDateTime.now();
@@ -69,19 +73,26 @@ public class FlightService {
         }
         return flights;
     }
-    @Transactional
+
     public void markFlightDeparted(Long flightId) {
         Flight flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new FlightNotFoundException(flightId));
         flight.setStatus(FlightStatus.DEPARTED);
     }
+
     @Transactional
     public void cancelFlight(Long flightId) {
         Flight flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new FlightNotFoundException(flightId));
         flight.setStatus(FlightStatus.CANCELLED);
     }
-    public static long getBookingWindowMinutes() {
-        return BOOKING_WINDOW_MINUTES;
+
+    @Transactional
+    public void markRelevantFlightsAsDeparted() {
+        flightRepository.findAll().forEach(flight -> {
+            if (flight.getStatus() == FlightStatus.ACTIVE && flight.getDepartureAt().isBefore(OffsetDateTime.now())) {
+                markFlightDeparted(flight.getId());
+            }
+        });
     }
 }

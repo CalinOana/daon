@@ -45,7 +45,7 @@ paths:
               schema:
                 type: array
                 items:
-                 $ref: '#/components/schemas/FlightDto'
+                  $ref: '#/components/schemas/FlightDto'
         '400':
           description: Invalid query parameters
   /flights/{id}/bookings:
@@ -80,6 +80,29 @@ paths:
           description: Flight not found
         '409':
           description: Seat unavailable or booking window closed
+    get:
+      tags:
+        - bookings
+      summary: List all bookings for a flight
+      operationId: listBookings
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Bookings returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookingDto'
+        '404':
+          description: Flight not found
   /bookings/{id}/confirm:
     post:
       tags:
@@ -97,9 +120,9 @@ paths:
         '200':
           description: Booking confirmed
           content:
-           application/json:
-            schema:
-              $ref: '#/components/schemas/BookingDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingDto'
         '404':
           description: Booking not found
         '409':
@@ -140,7 +163,7 @@ paths:
           content:
             application/json:
               schema:
-               $ref: '#/components/schemas/FlightDto'
+                $ref: '#/components/schemas/FlightDto'
         '400':
           description: Invalid flight data
   /admin/flights/{id}:
@@ -210,75 +233,75 @@ components:
         - departureAt
         - totalSeats
       properties:
-          departureAirportCode:
-            type: string
-            minLength: 3
-            maxLength: 10
-          departureCity:
-            type: string
-            minLength: 2
-            maxLength: 100
-          arrivalAirportCode:
-            type: string
-            minLength: 3
-            maxLength: 10
-          arrivalCity:
-            type: string
-            minLength: 2
-            maxLength: 100
-          departureAt:
-            type: string
-            format: date-time
-          totalSeats:
-            type: integer
-            format: int32
-            minimum: 1
+        departureAirportCode:
+          type: string
+          minLength: 3
+          maxLength: 10
+        departureCity:
+          type: string
+          minLength: 2
+          maxLength: 100
+        arrivalAirportCode:
+          type: string
+          minLength: 3
+          maxLength: 10
+        arrivalCity:
+          type: string
+          minLength: 2
+          maxLength: 100
+        departureAt:
+          type: string
+          format: date-time
+        totalSeats:
+          type: integer
+          format: int32
+          minimum: 1
     CreateBookingRequest:
-        type: object
-        required:
-          - passengerName
-          - passengerEmail
-        properties:
-          passengerName:
-            type: string
-            minLength: 1
-            maxLength: 150
-          passengerEmail:
-            type: string
-            format: email
-            maxLength: 255
+      type: object
+      required:
+        - passengerName
+        - passengerEmail
+      properties:
+        passengerName:
+          type: string
+          minLength: 1
+          maxLength: 150
+        passengerEmail:
+          type: string
+          format: email
+          maxLength: 255
 
     BookingDto:
-        type: object
-        required:
-          - id
-          - flightId
-          - passengerName
-          - passengerEmail
-          - status
-          - expiresAt
-        properties:
-          id:
-            type: integer
-            format: int64
-          flightId:
-            type: integer
-            format: int64
-          passengerName:
-            type: string
-          passengerEmail:
-            type: string
-          status:
-            type: string
-            enum: [ HELD, CONFIRMED, CANCELLED, EXPIRED ]
-          expiresAt:
-            type: string
-            format: date-time
-          confirmedAt:
-            type: string
-            format: date-time
-            nullable: true
-          cancelledAt:
-            type: string
-            format: date-time
-            nullable: true
+      type: object
+      required:
+        - id
+        - flightId
+        - passengerName
+        - passengerEmail
+        - status
+        - expiresAt
+      properties:
+        id:
+          type: integer
+          format: int64
+        flightId:
+          type: integer
+          format: int64
+        passengerName:
+          type: string
+        passengerEmail:
+          type: string
+        status:
+          type: string
+          enum: [ HELD, CONFIRMED, CANCELLED, EXPIRED ]
+        expiresAt:
+          type: string
+          format: date-time
+        confirmedAt:
+          type: string
+          format: date-time
+          nullable: true
+        cancelledAt:
+          type: string
+          format: date-time
+          nullable: true

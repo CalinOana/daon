@@ -33,4 +33,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             and b.status = :status
             """)
     long countByFlightIdAndStatus(@Param("flightId") Long flightId, @Param("status") BookingStatus status);
+
+    List<Booking> findByFlightId(Long flightId);
 }

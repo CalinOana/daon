@@ -1,0 +1,178 @@
+{
+	"info": {
+		"_postman_id": "029073af-577d-42a6-b353-5b529bcf0921",
+		"name": "Daon",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Flights",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:8080/flights",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flights"
+					]
+				},
+				"description": "asdf"
+			},
+			"response": []
+		},
+		{
+			"name": "Admin Post Flight",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"departureAirportCode\": \"DUB\",\r\n  \"departureCity\": \"Dublin\",\r\n  \"arrivalAirportCode\": \"SBZ\",\r\n  \"arrivalCity\": \"Sibiu\",\r\n  \"departureAt\": \"2027-04-23T18:25:43.511Z\",\r\n  \"totalSeats\": 67\r\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/admin/flights",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"flights"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin Delete Flight",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:8080/admin/flights/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"flights",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Booking on Flight",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"passengerName\": \"John\",\r\n  \"passengerEmail\": \"John@gmail.com\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/flights/2/bookings",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flights",
+						"2",
+						"bookings"
+					]
+				},
+				"description": "Post "
+			},
+			"response": []
+		},
+		{
+			"name": "Get Bookings for flight",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:8080/flights/2/bookings",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"flights",
+						"2",
+						"bookings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm Booking by id",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/bookings/1/confirm",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"bookings",
+						"1",
+						"confirm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cancel booking",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:8080/bookings/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"bookings",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
